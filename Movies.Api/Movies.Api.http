@@ -1,0 +1,30 @@
+@Movies.Api_HostAddress = http://localhost:5157
+@Movie.Id = 5963fbd0-a91e-4738-843a-d5dec1e1ff81
+
+### Create Movies 
+POST {{Movies.Api_HostAddress}}/api/movies
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "HaramBae",
+  "yearOfRelease": 2024,
+  "genres": ["Comedy"]
+}
+
+### Get Movies
+GET {{Movies.Api_HostAddress}}/api/movies
+Accept: application/json
+
+### Get Movie
+GET {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+
+### Update Movie
+PUT {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+Content-Type: application/json
+
+{
+  "title": "booo",
+  "yearOfRelease": 2024,
+  "genres": ["Comedy"]
+}
