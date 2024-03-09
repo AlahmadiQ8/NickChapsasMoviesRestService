@@ -1,5 +1,6 @@
 @Movies.Api_HostAddress = http://localhost:5157
-@Movie.Id = 5963fbd0-a91e-4738-843a-d5dec1e1ff81
+@Movie.Slug = harambae-2024
+@Movie.Id = 8e09f41f-3e63-4db6-8968-7319bcb620e8
 
 ### Create Movies 
 POST {{Movies.Api_HostAddress}}/api/movies
@@ -16,8 +17,11 @@ Content-Type: application/json
 GET {{Movies.Api_HostAddress}}/api/movies
 Accept: application/json
 
-### Get Movie
+### Get Movie by id
 GET {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+
+### Get Movie by slug
+GET {{Movies.Api_HostAddress}}/api/movies/{{Movie.Slug}}
 
 ### Update Movie
 PUT {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
@@ -28,3 +32,6 @@ Content-Type: application/json
   "yearOfRelease": 2024,
   "genres": ["Comedy"]
 }
+
+### Delete Movie 
+DELETE {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}

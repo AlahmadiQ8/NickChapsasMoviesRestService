@@ -14,13 +14,16 @@ public class MoviesController(IMovieRepository movieRepository) : ControllerBase
     {
         var movie = request.MapToMovie();
         await movieRepository.CreateAsync(movie);
-        return CreatedAtAction(nameof(Get), new { id = movie.Id }, movie);
+        return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, movie);
     }
 
     [HttpGet(ApiEndpoints.Movies.Get)]
-    public async Task<IActionResult> Get([FromRoute] Guid id)
+    public async Task<IActionResult> Get([FromRoute] string idOrSlug)
     {
-        var movie = await movieRepository.GetByIdAsync(id);
+        var movie = Guid.TryParse(idOrSlug, out var id)
+            ? await movieRepository.GetByIdAsync(id)
+            : await movieRepository.GetBySlugAsync(idOrSlug);
+        
         if (movie == null)
         {
             return NotFound();
@@ -46,6 +49,16 @@ public class MoviesController(IMovieRepository movieRepository) : ControllerBase
             return NotFound();
         return Ok(movie.MapToResponse());
     }
-    
-    
+
+    [HttpDelete(ApiEndpoints.Movies.Delete)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        var deleted = await movieRepository.DeleteByIdAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return Ok();
+    }
 }
