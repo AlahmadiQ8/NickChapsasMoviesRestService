@@ -2,7 +2,7 @@
 
 namespace Movies.Application.Repositories;
 
-public class MovieRepository : IMovieRepository
+public class InMemoryMovieRepository : IMovieRepository
 {
     private readonly List<Movie> _movies = [];
     
@@ -46,5 +46,10 @@ public class MovieRepository : IMovieRepository
         var removeCount = _movies.RemoveAll(x => x.Id == id);
         var movieRemoved = removeCount > 0;
         return Task.FromResult(movieRemoved);
+    }
+
+    public Task<bool> ExistsByIdAsync(Guid id)
+    {
+        return Task.FromResult(_movies.FindIndex(x => x.Id == id) > -1);
     }
 }
