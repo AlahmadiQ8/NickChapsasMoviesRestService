@@ -1,6 +1,6 @@
 @Movies.Api_HostAddress = http://localhost:5157
 @Movie.Slug = harambae-2024
-@Movie.Id = 802ea383-2ab1-4175-8310-0876fc45d649
+@Movie.Id = 680cc124-5d34-4085-9429-9db472e429ce
 
 ### Create Movies 
 POST {{Movies.Api_HostAddress}}/api/movies
@@ -8,8 +8,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "title": "HaramBae",
-  "yearOfRelease": 2024,
+  "title": "HaradmBvae",
+  "yearOfRelease": 2025,
   "genres": ["Comedy"]
 }
 
