@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "Identity.Api\Identity.Api.csproj", "{5446F321-464F-430B-A2C5-DCE3EAF28765}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{0405E3F3-3765-4561-9057-FACA30135FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0405E3F3-3765-4561-9057-FACA30135FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0405E3F3-3765-4561-9057-FACA30135FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5446F321-464F-430B-A2C5-DCE3EAF28765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5446F321-464F-430B-A2C5-DCE3EAF28765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5446F321-464F-430B-A2C5-DCE3EAF28765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5446F321-464F-430B-A2C5-DCE3EAF28765}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
