@@ -1,15 +1,18 @@
 @Movies.Api_HostAddress = http://localhost:5157
+@Identity.Api_HostAddress = http://localhost:5002
 @Movie.Slug = harambae-2024
 @Movie.Id = 680cc124-5d34-4085-9429-9db472e429ce
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiODdlMGM4My1iNTM1LTRlZWItOTc0Mi04YjE5N2RlMDdlNmQiLCJzdWIiOiJuaWNrQG5pY2tjaGFwc2FzLmNvbSIsImVtYWlsIjoibmlja0BuaWNrY2hhcHNhcy5jb20iLCJ1c2VyaWQiOiJkODU2NmRlMy1iMWE2LTRhOWItYjg0Mi04ZTM4ODdhODJlNDEiLCJhZG1pbiI6ZmFsc2UsInRydXN0ZWRfbWVtYmVyIjp0cnVlLCJuYmYiOjE3MTA5NzA5NDksImV4cCI6MTcxMDk5OTc0OSwiaWF0IjoxNzEwOTcwOTQ5LCJpc3MiOiJodHRwczovL2FsYWhtYWRpcTguZ2l0aHViLmlvIiwiYXVkIjoiaHR0cHM6Ly9tb3ZpZXMuYWxhaG1hZGlxOC5naXRodWIuaW8ifQ.lf2r_5jq3S4ub40hhWzK3edMocD_kQhgirVG8ktl_Is
 
 ### Create Movies 
 POST {{Movies.Api_HostAddress}}/api/movies
+Authorization: Bearer {{Token}}
 Accept: application/json
 Content-Type: application/json
 
 {
   "title": "HaradmBvae",
-  "yearOfRelease": 2025,
+  "yearOfRelease": 2024,
   "genres": ["Comedy"]
 }
 
@@ -35,3 +38,16 @@ Content-Type: application/json
 
 ### Delete Movie 
 DELETE {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+
+### Generate token
+POST {{Identity.Api_HostAddress}}/token
+Content-Type: application/json
+
+{
+  "userid": "d8566de3-b1a6-4a9b-b842-8e3887a82e41",
+  "email": "nick@nickchapsas.com",
+  "customClaims": {
+    "admin": false,
+    "trusted_member": true
+  }
+}
