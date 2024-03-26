@@ -101,7 +101,17 @@ public class PostgresMovieRepository(IDbConnectionFactory dbConnectionFactory) :
     public async Task<IEnumerable<Movie>> GetAllAsync(GetAllMoviesOptions options, CancellationToken token = default)
     {
         using var connection = await dbConnectionFactory.CreateConnectionAsync(token);
-        var result = await connection.QueryAsync(new CommandDefinition("""
+
+        var orderClause = string.Empty;
+        if (options.SortField is not null)
+        {
+            orderClause = $"""
+                           , m.{options.SortField}
+                           ORDER BY m.{options.SortField} {(options.SortOrder == SortOrder.Ascending ? "asc" : "desc")}
+                           """;
+        }
+        
+        var result = await connection.QueryAsync(new CommandDefinition($"""
                                                                        SELECT m.*, 
                                                                        string_agg(distinct g.name, ',') as genres,
                                                                        round(avg(r.rating), 1) as rating, 
@@ -111,8 +121,16 @@ public class PostgresMovieRepository(IDbConnectionFactory dbConnectionFactory) :
                                                                        LEFT JOIN ratings r ON m.id = r.movie_id
                                                                        LEFT JOIN ratings myr ON m.id = myr.movie_id 
                                                                                                     AND myr.user_id = @userId
+                                                                       WHERE (@title IS NULL OR m.title LIKE ('%' || @title || '%'))
+                                                                       AND (@yearOfRelease IS NULL OR m.year_of_release = @yearOfRelease)
                                                                        GROUP BY id, myr.rating
-                                                                       """, new {userId = options.UserId}, cancellationToken: token));
+                                                                       {orderClause}
+                                                                       """, new
+        {
+            userId = options.UserId,
+            title = options.Title,
+            yearOfRelease = options.YearOfRelease
+        }, cancellationToken: token));
 
         return result.Select(x => new Movie
         {

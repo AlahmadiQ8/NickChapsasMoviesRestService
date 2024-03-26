@@ -1,4 +1,5 @@
 ﻿using Movies.Application.Models;
+using Movies.Application.Validators;
 using Movies.Contracts.Requests;
 using Movies.Contracts.Responses;
 
@@ -16,7 +17,7 @@ public static class ContractMapping
             Genres = request.Genres.ToList()
         };
     }
-    
+
     public static MovieResponse MapToResponse(this Movie movie)
     {
         return new MovieResponse
@@ -38,7 +39,7 @@ public static class ContractMapping
             Items = movies.Select(MapToResponse)
         };
     }
-    
+
     public static Movie MapToMovie(this UpdateMovieRequest request, Guid id)
     {
         return new Movie
@@ -65,7 +66,10 @@ public static class ContractMapping
         return new GetAllMoviesOptions
         {
             Title = request.Title,
-            YearOfRelease = request.Year
+            YearOfRelease = request.Year,
+            SortField = request.SortBy?.Trim('+', '-').ToLower(),
+            SortOrder = request.SortBy is null ? SortOrder.Unsorted :
+                request.SortBy.StartsWith('-') ? SortOrder.Descending : SortOrder.Ascending
         };
     }
 

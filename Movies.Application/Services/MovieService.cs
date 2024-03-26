@@ -26,6 +26,7 @@ public class MovieService(IMovieRepository movieRepository, IValidator<Movie> mo
     public async Task<IEnumerable<Movie>> GetAllAsync(GetAllMoviesOptions options, CancellationToken token = default)
     {
         await optionsValidator.ValidateAndThrowAsync(options, token);
+        options.SortField = AcceptableSortFieldsMapping.GetValueOrDefault(options.SortField ?? string.Empty, null);
         
         return await movieRepository.GetAllAsync(options, token);
     }
@@ -58,4 +59,10 @@ public class MovieService(IMovieRepository movieRepository, IValidator<Movie> mo
     {
         return movieRepository.DeleteByIdAsync(id, token);
     }
+    
+    private static readonly Dictionary<string, string> AcceptableSortFieldsMapping = new()
+    {
+        { "title", "title" },
+        { "year", "year_of_release" }
+    };
 }

@@ -1,8 +1,8 @@
 @Movies.Api_HostAddress = http://localhost:5157
 @Identity.Api_HostAddress = http://localhost:5002
 @Movie.Slug = harambae-2024
-@Movie.Id = 7cab8de2-9d11-4b56-9c2c-8b77da564d5d
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODU4ZmUyOC02YTg5LTQ5ODUtYTRkZi04MzliMzdmMzRkMDMiLCJzdWIiOiJuaWNrQG5pY2tjaGFwc2FzLmNvbSIsImVtYWlsIjoibmlja0BuaWNrY2hhcHNhcy5jb20iLCJ1c2VyaWQiOiJkODU2NmRlMy1iMWE2LTRhOWItYjg0Mi04ZTM4ODdhODJlNDEiLCJhZG1pbiI6dHJ1ZSwidHJ1c3RlZF9tZW1iZXIiOnRydWUsIm5iZiI6MTcxMTM3Njc4NiwiZXhwIjoxNzExNDA1NTg2LCJpYXQiOjE3MTEzNzY3ODYsImlzcyI6Imh0dHBzOi8vYWxhaG1hZGlxOC5naXRodWIuaW8iLCJhdWQiOiJodHRwczovL21vdmllcy5hbGFobWFkaXE4LmdpdGh1Yi5pbyJ9.KOlfdw6WmVvlULafyPsSP7mrb5CmgrL6KHlb7bNPQHg
+@Movie.Id = cdac7f69-f0df-4e13-83b1-1e823b495a75
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YTJmZmZjNC0xZDVhLTQyMWItOGZjMC01ZWIxM2RhOGJmNDkiLCJzdWIiOiJuaWNrQG5pY2tjaGFwc2FzLmNvbSIsImVtYWlsIjoibmlja0BuaWNrY2hhcHNhcy5jb20iLCJ1c2VyaWQiOiJkODU2NmRlMy1iMWE2LTRhOWItYjg0Mi04ZTM4ODdhODJlNDEiLCJhZG1pbiI6dHJ1ZSwidHJ1c3RlZF9tZW1iZXIiOnRydWUsIm5iZiI6MTcxMTQ4MDU2NiwiZXhwIjoxNzExNTA5MzY2LCJpYXQiOjE3MTE0ODA1NjYsImlzcyI6Imh0dHBzOi8vYWxhaG1hZGlxOC5naXRodWIuaW8iLCJhdWQiOiJodHRwczovL21vdmllcy5hbGFobWFkaXE4LmdpdGh1Yi5pbyJ9.r70kjhPQDcVmmfLMnyQCetHVo6RRkj94HxgBqYwBhlg
 
 ### Create Movies 
 POST {{Movies.Api_HostAddress}}/api/movies
@@ -11,13 +11,21 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "title": "HaradmBvae",
-  "yearOfRelease": 2024,
+  "title": "The Whailing",
+  "yearOfRelease": 2021,
   "genres": ["Comedy"]
 }
 
 ### Get Movies
 GET {{Movies.Api_HostAddress}}/api/movies
+Accept: application/json
+
+### Get Movies With Filters
+GET {{Movies.Api_HostAddress}}/api/movies?title=Visit&year=2023
+Accept: application/json
+
+### Get Movies With Sorting
+GET {{Movies.Api_HostAddress}}/api/movies?sortBy=title
 Accept: application/json
 
 ### Get Movie by id
