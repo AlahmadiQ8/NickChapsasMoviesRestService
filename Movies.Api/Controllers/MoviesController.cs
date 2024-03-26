@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Movies.Api.Auth;
 using Movies.Api.Mapping;
+using Movies.Application.Models;
 using Movies.Application.Services;
 using Movies.Contracts.Requests;
 
@@ -21,9 +23,11 @@ public class MoviesController(IMovieService movieService) : ControllerBase
     [HttpGet(ApiEndpoints.Movies.Get)]
     public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken token)
     {
+        var userId = HttpContext.GetUserId(); 
+        
         var movie = Guid.TryParse(idOrSlug, out var id)
-            ? await movieService.GetByIdAsync(id, token)
-            : await movieService.GetBySlugAsync(idOrSlug, token);
+            ? await movieService.GetByIdAsync(id, userId, token)
+            : await movieService.GetBySlugAsync(idOrSlug, userId, token);
         
         if (movie == null)
         {
@@ -34,9 +38,12 @@ public class MoviesController(IMovieService movieService) : ControllerBase
     }
     
     [HttpGet(ApiEndpoints.Movies.GetAll)]
-    public async Task<IActionResult> GetAll(CancellationToken token)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken token)
     {
-        var movies = await movieService.GetAllAsync(token);
+        var userId = HttpContext.GetUserId();
+        var options = request.MapToOptions().WithUser(userId);
+        
+        var movies = await movieService.GetAllAsync(options, token);
         var moviesResponse = movies.MapToResponse();
         return Ok(moviesResponse);
     }
@@ -45,8 +52,9 @@ public class MoviesController(IMovieService movieService) : ControllerBase
     [HttpPut(ApiEndpoints.Movies.Update)]
     public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]UpdateMovieRequest request, CancellationToken token)
     {
+        var userId = HttpContext.GetUserId();
         var movie = request.MapToMovie(id);
-        var movieUpdated = await movieService.UpdateAsync(movie, token);
+        var movieUpdated = await movieService.UpdateAsync(movie, userId, token);
         if (movieUpdated == null)
             return NotFound();
         return Ok(movie.MapToResponse());

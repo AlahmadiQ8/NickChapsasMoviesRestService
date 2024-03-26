@@ -1,8 +1,8 @@
 @Movies.Api_HostAddress = http://localhost:5157
 @Identity.Api_HostAddress = http://localhost:5002
 @Movie.Slug = harambae-2024
-@Movie.Id = 680cc124-5d34-4085-9429-9db472e429ce
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiODdlMGM4My1iNTM1LTRlZWItOTc0Mi04YjE5N2RlMDdlNmQiLCJzdWIiOiJuaWNrQG5pY2tjaGFwc2FzLmNvbSIsImVtYWlsIjoibmlja0BuaWNrY2hhcHNhcy5jb20iLCJ1c2VyaWQiOiJkODU2NmRlMy1iMWE2LTRhOWItYjg0Mi04ZTM4ODdhODJlNDEiLCJhZG1pbiI6ZmFsc2UsInRydXN0ZWRfbWVtYmVyIjp0cnVlLCJuYmYiOjE3MTA5NzA5NDksImV4cCI6MTcxMDk5OTc0OSwiaWF0IjoxNzEwOTcwOTQ5LCJpc3MiOiJodHRwczovL2FsYWhtYWRpcTguZ2l0aHViLmlvIiwiYXVkIjoiaHR0cHM6Ly9tb3ZpZXMuYWxhaG1hZGlxOC5naXRodWIuaW8ifQ.lf2r_5jq3S4ub40hhWzK3edMocD_kQhgirVG8ktl_Is
+@Movie.Id = 7cab8de2-9d11-4b56-9c2c-8b77da564d5d
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODU4ZmUyOC02YTg5LTQ5ODUtYTRkZi04MzliMzdmMzRkMDMiLCJzdWIiOiJuaWNrQG5pY2tjaGFwc2FzLmNvbSIsImVtYWlsIjoibmlja0BuaWNrY2hhcHNhcy5jb20iLCJ1c2VyaWQiOiJkODU2NmRlMy1iMWE2LTRhOWItYjg0Mi04ZTM4ODdhODJlNDEiLCJhZG1pbiI6dHJ1ZSwidHJ1c3RlZF9tZW1iZXIiOnRydWUsIm5iZiI6MTcxMTM3Njc4NiwiZXhwIjoxNzExNDA1NTg2LCJpYXQiOjE3MTEzNzY3ODYsImlzcyI6Imh0dHBzOi8vYWxhaG1hZGlxOC5naXRodWIuaW8iLCJhdWQiOiJodHRwczovL21vdmllcy5hbGFobWFkaXE4LmdpdGh1Yi5pbyJ9.KOlfdw6WmVvlULafyPsSP7mrb5CmgrL6KHlb7bNPQHg
 
 ### Create Movies 
 POST {{Movies.Api_HostAddress}}/api/movies
@@ -22,12 +22,14 @@ Accept: application/json
 
 ### Get Movie by id
 GET {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+Authorization: Bearer {{Token}}
 
 ### Get Movie by slug
 GET {{Movies.Api_HostAddress}}/api/movies/{{Movie.Slug}}
 
 ### Update Movie
 PUT {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}
+Authorization: Bearer {{Token}}
 Content-Type: application/json
 
 {
@@ -47,7 +49,26 @@ Content-Type: application/json
   "userid": "d8566de3-b1a6-4a9b-b842-8e3887a82e41",
   "email": "nick@nickchapsas.com",
   "customClaims": {
-    "admin": false,
+    "admin": true,
     "trusted_member": true
   }
 }
+
+### Rate Movie
+PUT {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}/ratings
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "rating": 1
+}
+
+### Get my ratings
+GET {{Movies.Api_HostAddress}}/api/ratings/me
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+### Delete my ratings
+DELETE {{Movies.Api_HostAddress}}/api/movies/{{Movie.Id}}/ratings
+Authorization: Bearer {{Token}}
+Accept: application/json

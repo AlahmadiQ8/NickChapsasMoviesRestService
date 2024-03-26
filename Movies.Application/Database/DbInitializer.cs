@@ -28,5 +28,14 @@ public class DbInitializer(IDbConnectionFactory dbConnectionFactory)
                                           name TEXT NOT NULL
                                       );
                                       """);
+        
+        await connection.ExecuteAsync("""
+                                      CREATE TABLE IF NOT EXISTS ratings(
+                                          user_id UUID,
+                                          movie_id UUID references movies (id),
+                                          rating integer not null,
+                                          primary key (user_id, movie_id)
+                                      );
+                                      """);
     }
 }
