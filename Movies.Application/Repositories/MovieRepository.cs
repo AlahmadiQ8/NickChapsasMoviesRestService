@@ -4,7 +4,7 @@ using Movies.Application.Models;
 
 namespace Movies.Application.Repositories;
 
-public class PostgresMovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieRepository
+public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieRepository
 {
     public async Task<bool> CreateAsync(Movie movie, CancellationToken token = default)
     {
@@ -125,12 +125,16 @@ public class PostgresMovieRepository(IDbConnectionFactory dbConnectionFactory) :
                                                                        AND (@yearOfRelease IS NULL OR m.year_of_release = @yearOfRelease)
                                                                        GROUP BY id, myr.rating
                                                                        {orderClause}
-                                                                       """, new
-        {
-            userId = options.UserId,
-            title = options.Title,
-            yearOfRelease = options.YearOfRelease
-        }, cancellationToken: token));
+                                                                       LIMIT @pageSize
+                                                                       OFFSET @pageOffset
+                                                                       """, 
+            new { 
+                userId = options.UserId, 
+                title = options.Title, 
+                yearOfRelease = options.YearOfRelease,
+                pageSize = options.PageSize,
+                pageOffset = (options.Page - 1) * options.PageSize
+            }, cancellationToken: token));
 
         return result.Select(x => new Movie
         {
@@ -189,5 +193,17 @@ public class PostgresMovieRepository(IDbConnectionFactory dbConnectionFactory) :
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
                                                                          SELECT COUNT(1) FROM movies WHERE id = @id
                                                                          """, new {id}, cancellationToken: token));
+    } 
+
+    public async Task<int> GetCountAsync(string? title, int? yearOfRelease, CancellationToken token)
+    {
+        using var connection = await dbConnectionFactory.CreateConnectionAsync(token);
+        return await connection.QuerySingleAsync<int>(
+            new CommandDefinition("""
+                                  SELECT COUNT(id) FROM MOVIES
+                                  WHERE (@title IS NULL OR title LIKE ('%' || @title || '%'))
+                                  AND (@yearOfRelease IS NULL OR year_of_release = @yearOfRelease)
+                                  """,
+                new { title, yearOfRelease }, cancellationToken: token));
     }
 }

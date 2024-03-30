@@ -5,6 +5,7 @@ using Movies.Api.Mapping;
 using Movies.Application.Models;
 using Movies.Application.Services;
 using Movies.Contracts.Requests;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Controllers;
 
@@ -21,7 +22,11 @@ public class MoviesController(IMovieService movieService) : ControllerBase
     }
     
     [HttpGet(ApiEndpoints.Movies.Get)]
-    public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken token)
+    public async Task<IActionResult> Get(
+        [FromRoute] string idOrSlug,
+        [FromServices] LinkGenerator linkGenerator,
+        CancellationToken token
+        )
     {
         var userId = HttpContext.GetUserId(); 
         
@@ -44,7 +49,8 @@ public class MoviesController(IMovieService movieService) : ControllerBase
         var options = request.MapToOptions().WithUser(userId);
         
         var movies = await movieService.GetAllAsync(options, token);
-        var moviesResponse = movies.MapToResponse();
+        var movieCount = await movieService.GetCountAsync(options.Title, options.YearOfRelease, token);
+        var moviesResponse = movies.MapToResponse(request.Page, request.PageSize, movieCount);
         return Ok(moviesResponse);
     }
 

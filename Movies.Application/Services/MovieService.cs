@@ -59,7 +59,12 @@ public class MovieService(IMovieRepository movieRepository, IValidator<Movie> mo
     {
         return movieRepository.DeleteByIdAsync(id, token);
     }
-    
+
+    public Task<int> GetCountAsync(string? title, int? yearOfRelease, CancellationToken token)
+    {
+        return movieRepository.GetCountAsync(title, yearOfRelease, token);
+    }
+
     private static readonly Dictionary<string, string> AcceptableSortFieldsMapping = new()
     {
         { "title", "title" },
