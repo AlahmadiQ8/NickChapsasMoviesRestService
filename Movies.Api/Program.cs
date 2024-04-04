@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api;
 using Movies.Api.Auth;
+using Movies.Api.Health;
 using Movies.Api.Mapping;
 using Movies.Api.Swagger;
 using Movies.Application;
@@ -37,8 +38,8 @@ builder.Services.AddAuthorization(x =>
 {
     x.AddPolicy(AuthConstants.AdminUserPolicyName, p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
     x.AddPolicy(AuthConstants.TrustedMemberPolicyName, p => p.RequireAssertion(c =>
-        c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
-        c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })
+            c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })
         )
     );
 });
@@ -51,7 +52,22 @@ builder.Services.AddApiVersioning(x =>
     x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
 }).AddMvc().AddApiExplorer();
 
+builder.Services.AddResponseCaching();
+builder.Services.AddOutputCache(x =>
+{
+    x.AddBasePolicy(c => c.Cache());
+    x.AddPolicy("MovieCache", c => c.Cache()
+        .Expire(TimeSpan.FromMinutes(1))
+        .SetVaryByQuery(["title", "year", "sortBy", "page", "pageSize"])
+        .Tag("movies")
+    );
+});
+
 builder.Services.AddControllers();
+
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 // Add services to the container.
@@ -76,10 +92,16 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapHealthChecks("_health");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// app.UseCors();
+app.UseResponseCaching();
+app.UseOutputCache();
 
 app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
